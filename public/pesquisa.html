@@ -4,25 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pesquisa</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Pesquisa de Imagens</h1>
 
-    <form action="/pesquisa" method="get">
-        <label for="imagem">Pesquisar Imagem (Pixabay):</label><br>
-        <input type="text" id="imagem" name="conceito" placeholder="ex: mar, flores"><br>
-        <button type="submit">Pesquisar Imagem</button>
-    </form>
+    <form id="formImagem">
+    <label for="imagem">Pesquisar Imagem (Pixabay):</label><br>
+    <input type="text" id="imagem" name="conceito" placeholder="ex: mar, flores"><br>
+    <button type="submit">Pesquisar Imagem</button>
+</form>
+
 
     <hr>
     <div id="imagens"></div>
 
     <h1>Pesquisa de Tempo</h1>
+<form id="formTempo">
+    <label for="cidade">Pesquisar Tempo (OpenWeather):</label><br>
+    <input type="text" id="cidade" name="cidade" placeholder="ex: Lisboa, Porto"><br>
+    <button type="submit">Ver Tempo</button>
+</form>
 
-    <form action="/weather" method="get">
-        <label for="cidade">Pesquisar Tempo (OpenWeather):</label><br>
-        <input type="text" id="cidade" name="cidade" placeholder="ex: Lisboa, Porto"><br>
-        <button type="submit">Ver Tempo</button>
-    </form>
+<!-- Começa completamente vazio -->
+<div id="resultadoTempo" style="display: none;"></div>
+
+
 </body>
+<script src="script.js"></script>
 </html>

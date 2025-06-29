@@ -60,7 +60,7 @@ app.get('/protegido', isAuthenticated,(req, res)=>{
 //Login route
 
 app.post('/login', async (req, res)=>{
-    const username= req.body.username;
+    const username = req.body.username.toLowerCase();
     const password= req.body.password;
     try {
         const user = await usersCollection.findOne({ username });
@@ -92,7 +92,8 @@ app.get('/register.html', (req, res) => {
 
 // Rota para processar o registo (POST)
 app.post('/register', async (req, res) => {
-    const { username, password } = req.body;
+    const username = req.body.username.toLowerCase();
+    const password = req.body.password;
 
     if (!username || !password) {
         return res.status(400).send("Username e password são obrigatórios.");
@@ -161,7 +162,7 @@ app.get('/pesquisa', async (req, res) => {
         const dados = await resposta.json();
 
         // Guardar no histórico
-        await historico.insertOne({
+        await hist.insertOne({
             username: username,
             conceito: conceito,
             data: new Date()

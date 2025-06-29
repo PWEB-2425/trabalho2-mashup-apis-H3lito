@@ -1,12 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Página Principal</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1> Olá Mundo</h1>
-    <a href="login.html">Entrar aqui</a>
+    <header class="cabecalho">
+        <h1>Bem-vindo ao Meu Portal</h1>
+        <p>Consulta imagens, vê o tempo, e muito mais!</p>
+    </header>
+
+    <nav class="atalhos">
+        <a href="/login.html">🔐 Login</a>
+        <a href="/register.html">📝 Registo</a>
+        <a href="/pesquisa.html">🔍 Pesquisa</a>
+    </nav>
+
+    <section id="hoje">
+        <h2>Hoje é <span id="data"></span></h2>
+        <p>🌤️ Vê o tempo na tua cidade na secção de pesquisa!</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2025| APIs </p>
+    
+    </footer>
+
 </body>
 </html>

@@ -1,64 +1,76 @@
-async function pesquisar() {
-    const termo = document.getElementById('termo').value;
+document.addEventListener("DOMContentLoaded", function () {
 
-    if (!termo.trim()) {
-        alert('Por favor, insere um termo para pesquisar.');
-        return;
-    }
+    // === PESQUISA DE IMAGEM ===
+    const formImagem = document.getElementById("formImagem");
+    const imagensDiv = document.getElementById("imagens");
 
-    try {
-        const res = await fetch(`/pesquisa/${encodeURIComponent(termo)}`);
-        const imagens = await res.json();
+    formImagem.addEventListener("submit", async function (event) {
+        event.preventDefault();
 
-        const div = document.getElementById('imagens');
-        div.innerHTML = '';
+        const conceito = document.getElementById("imagem").value;
+        imagensDiv.innerHTML = "";
 
-        if (imagens.length === 0) {
-            div.innerHTML = '<p>Nenhuma imagem encontrada.</p>';
-            return;
+        try {
+            const resposta = await fetch(`/pesquisa?conceito=${encodeURIComponent(conceito)}`);
+            const dados = await resposta.json();
+
+            if (dados.length === 0) {
+                imagensDiv.innerHTML = "<p>Nenhuma imagem encontrada.</p>";
+                return;
+            }
+
+            dados.forEach(imagem => {
+                const img = document.createElement("img");
+                img.src = imagem.webformatURL;
+                img.alt = `Imagem ${imagem.id}`;
+                img.style.maxWidth = "200px";
+                img.style.margin = "10px";
+                imagensDiv.appendChild(img);
+            });
+        } catch (error) {
+            imagensDiv.innerHTML = "<p>Erro ao carregar imagens.</p>";
+            console.error("Erro:", error);
         }
+    });
 
-        imagens.forEach(img => {
-            const imageElement = document.createElement('img');
-            imageElement.src = img.webformatURL;
-            imageElement.alt = "Imagem da pesquisa";
-            imageElement.style.width = '200px';
-            imageElement.style.margin = '10px';
-            div.appendChild(imageElement);
-        });
-    } catch (error) {
-        console.error('Erro ao obter imagens:', error);
-        document.getElementById('imagens').innerHTML = '<p>Erro ao carregar imagens.</p>';
-    }
-}
+    // === PESQUISA DE TEMPO ===
+    const formTempo = document.getElementById("formTempo");
+    const resultadoTempo = document.getElementById("resultadoTempo");
 
-async function pesquisarTempo() {
-    const cidade = document.getElementById('cidade').value;
+   formTempo.addEventListener("submit", async function (event) {
+    event.preventDefault();
 
-    if (!cidade.trim()) {
-        alert('Por favor, insere o nome de uma cidade.');
-        return;
-    }
+    const cidade = document.getElementById("cidade").value;
+    resultadoTempo.style.display = "none"; // Oculta enquanto limpa
+    resultadoTempo.innerHTML = "";
 
     try {
-        const res = await fetch(`/weather?cidade=${encodeURIComponent(cidade)}`);
-        const dados = await res.json();
+        const resposta = await fetch(`/weather?cidade=${encodeURIComponent(cidade)}`);
+        const dados = await resposta.json();
+       
 
         if (dados.error) {
-            document.getElementById('resultadoTempo').innerHTML = `<p>${dados.error}</p>`;
+            resultadoTempo.style.display = "block";
+            resultadoTempo.innerHTML = `<p>Erro: ${dados.error}</p>`;
             return;
         }
 
-        const html = `
-            <h3>Tempo em ${dados.cidade}</h3>
+        const div = document.createElement("div");
+        div.innerHTML = `
             <p>Temperatura: ${dados.temperatura}°C</p>
             <p>Descrição: ${dados.descricao}</p>
             <img src="${dados.icone}" alt="Ícone do tempo">
         `;
-        document.getElementById('resultadoTempo').innerHTML = html;
-
+        resultadoTempo.appendChild(div);
+        resultadoTempo.style.display = "block"; // Agora sim, mostra
     } catch (error) {
-        console.error('Erro ao obter dados do tempo:', error);
-        document.getElementById('resultadoTempo').innerHTML = '<p>Erro ao carregar dados do tempo.</p>';
+        resultadoTempo.style.display = "block";
+        resultadoTempo.innerHTML = "<p>Erro ao obter dados do tempo.</p>";
+        console.error("Erro:", error);
     }
-}
+});
+});
+
+
+
+ 
