@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa</title>
+</head>
+<body>
+    <h1>Pesquisa de Imagens</h1>
+
+    <form action="/pesquisa" method="get">
+        <label for="imagem">Pesquisar Imagem (Pixabay):</label><br>
+        <input type="text" id="imagem" name="conceito" placeholder="ex: mar, flores"><br>
+        <button type="submit">Pesquisar Imagem</button>
+    </form>
+
+    <hr>
+    <div id="imagens"></div>
+
+    <h1>Pesquisa de Tempo</h1>
+
+    <form action="/weather" method="get">
+        <label for="cidade">Pesquisar Tempo (OpenWeather):</label><br>
+        <input type="text" id="cidade" name="cidade" placeholder="ex: Lisboa, Porto"><br>
+        <button type="submit">Ver Tempo</button>
+    </form>
+</body>
+</html>
