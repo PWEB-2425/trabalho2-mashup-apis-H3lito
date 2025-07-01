@@ -9,27 +9,15 @@
 <body>
     <h1>Pesquisa de Imagens</h1>
 
-    <form id="formImagem">
-    <label for="imagem">Pesquisar Imagem (Pixabay):</label><br>
-    <input type="text" id="imagem" name="conceito" placeholder="ex: mar, flores"><br>
-    <button type="submit">Pesquisar Imagem</button>
+   <form id="formPesquisa">
+  <input type="text" id="termo" placeholder="Pesquisar cidade..." required>
+  <button type="submit">Pesquisar</button>
 </form>
 
+<div id="resultadoPesquisa"></div>
 
-    <hr>
-    <div id="imagens"></div>
-
-    <h1>Pesquisa de Tempo</h1>
-<form id="formTempo">
-    <label for="cidade">Pesquisar Tempo (OpenWeather):</label><br>
-    <input type="text" id="cidade" name="cidade" placeholder="ex: Lisboa, Porto"><br>
-    <button type="submit">Ver Tempo</button>
-</form>
-
-<!-- Começa completamente vazio -->
-<div id="resultadoTempo" style="display: none;"></div>
-
+<script src="script.js"></script>
 
 </body>
-<script src="script.js"></script>
+
 </html>

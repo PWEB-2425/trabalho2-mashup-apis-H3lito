@@ -123,129 +123,67 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// Rota para pesquisa de imagens (usa API do Pixabay)
-// Só acessível a utilizadores autenticados
-app.get('/pesquisa', isAuthenticated, async (req, res) => {
-    let conceito = req.query.conceito;
-    console.log(conceito);
-    if (!conceito) {
-        return res.status(400).json({ error: 'parâmetro "conceito" é obrigatório.' });
-    }
-    // Monta o URL para a API do Pixabay
-    const url = `https://pixabay.com/api/?key=${process.env.PIXABAYKEY}&q=${encodeURIComponent(conceito)}&image_type=photo&per_page=4`;
-    try {
-        const resultado = await fetch(url);
-        const dados = await resultado.json();
-        // Extrai apenas os dados relevantes das imagens
-        const photos = dados.hits.map(hit => ({
-            id: hit.id,
-            webformatURL: hit.webformatURL,
-            largeImageURL: hit.largeImageURL
-        }));
-        res.json(photos); // Envia as imagens para o frontend
-    } catch (err) {
-        res.status(500).json({ error: 'Erro ao obter imagens.' });
-    }
-});
+// Rota mashup combinada
+app.get('/api/search', isAuthenticated, async (req, res) => {
+    const termo = req.query.q;
+    const username = req.session.username;
 
-app.get('/pesquisa', async (req, res) => {
-    const conceito = req.query.conceito;
-    const username = req.session.username; // obtém o utilizador logado
-
-    if (!username) {
-        return res.status(401).send("Não autorizado");
-    }
+    if (!termo) return res.status(400).json({ error: "Parâmetro 'q' é obrigatório." });
 
     try {
-        const url = `https://pixabay.com/api/?key=${process.env.PIXABYKEY}&q=${encodeURIComponent(conceito)}&image_type=photo`;
-        const resposta = await fetch(url);
-        const dados = await resposta.json();
+        const weatherURL = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(termo)}&appid=${process.env.OPENWEATHERMAPKEY}&units=metric&lang=pt`;
+        const imageURL = `https://pixabay.com/api/?key=${process.env.PIXABAYKEY}&q=${encodeURIComponent(termo)}&image_type=photo&per_page=20`;
 
-        // Guardar no histórico
-        await hist.insertOne({
-            username: username,
-            conceito: conceito,
-            data: new Date()
+        const [weatherRes, imageRes] = await Promise.all([
+            fetch(weatherURL),
+            fetch(imageURL)
+        ]);
+
+        const weatherData = await weatherRes.json();
+        const imageData = await imageRes.json();
+
+        await pesquisasCollection.insertOne({ username, termo, data: new Date() });
+
+        res.json({
+            weather: {
+                cidade: weatherData.name,
+                temperatura: weatherData.main.temp,
+                descricao: weatherData.weather[0].description,
+                icone: `http://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`
+            },
+            images: imageData.hits.map(hit => ({
+                id: hit.id,
+                webformatURL: hit.webformatURL,
+                largeImageURL: hit.largeImageURL
+            }))
         });
 
-        res.json(dados.hits);
     } catch (error) {
-        console.error("Erro na pesquisa:", error);
-        res.status(500).send("Erro ao fazer a pesquisa.");
+        console.error("Erro mashup:", error);
+        res.status(500).json({ error: "Erro ao obter dados." });
     }
 });
 
-// Rota histórico de pesquisas
-
-app.get('/historico', async (req, res) => {
-    const username = req.session.username;
-    if (!username) {
-        return res.status(401).send("Não autorizado");
-    }
-
-    const historico = await pesquisasCollection
-        .find({ username })
-        .sort({ data: -1 })
-        .toArray();
-
+// Histórico
+app.get('/historico', isAuthenticated, async (req, res) => {
+    const historico = await pesquisasCollection.find({ username: req.session.username }).sort({ data: -1 }).toArray();
     res.json(historico);
 });
 
+// Iniciar servidor e ligar à BD
+const client = new MongoClient(process.env.MONGODB_URI);
+async function startServer() {
+    try {
+        await client.connect();
+        db = client.db('API_externo');
+        usersCollection = db.collection('users');
+        pesquisasCollection = db.collection('pesquisas');
 
-
-    //URL API do OpenWeatherMap
-
-    app.get('/weather', isAuthenticated, async (req, res) => {
-        const cidade= req.query.cidade;
-        if(!cidade){
-            return res.status(400).json({error:"parameter cidade is required"});
-        }
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(cidade)}&appid=${process.env.OPENWEATHERMAPKEY}&units=metric&lang=pt`;
-    try{
-        const resultado= await fetch(url);
-        if(!resultado.ok){
-            return res.status(500).json({error: 'Erro ao obter dados do tempo'});
-        }
-        const dados= await resultado.json();
-        const weatherData = {
-            cidade: dados.nome,
-            temperatura: dados.main.temp,
-            descricao: dados.weather[0].description,
-                       icone: `http://openweathermap.org/img/wn/${dados.weather[0].icon}@2x.png` 
-
-        };
-    res.json(weatherData);
-    } catch(err){
-        res.status(500).json({error: 'Erro ao obter dados do tempo'});
+        app.listen(3000, () => console.log("Servidor a correr em http://localhost:3000"));
+    } catch (err) {
+        console.error("Erro BD:", err);
     }
-});
+}
+startServer();
 
-    //Exemplo rota protegida
-
-    app.get('/secret', isAuthenticated, (req, res) => {
-        res.send("Anything you want to protect");
-    });
-
-    app.get('/pesquisa.html', isAuthenticated, (req, res) => {
-        res.sendFile(__dirname + '/public/pesquisa.html');
-    });
-
-    // Connect to MongoDB and start the server
-
-    const client = new MongoClient(process.env.MONGODB_URI);
-
-    async function startServer() {
-        try{
-            await client.connect();
-            db=client.db('API_externo');
-            usersCollection= db.collection('users');
-
-            app.listen(3000, () => 
-                console.log('Server is running on port'+(process.env.PORT || 3000))
-            );
-
-            } catch (error){
-                console.log("Erro ao ligar à base de dados: ", + error);
-            }
-            }
-            startServer();
+ 
