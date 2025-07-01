@@ -123,7 +123,6 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// Rota mashup combinada
 app.get('/api/search', isAuthenticated, async (req, res) => {
     const termo = req.query.q;
     const username = req.session.username;
@@ -138,6 +137,16 @@ app.get('/api/search', isAuthenticated, async (req, res) => {
             fetch(weatherURL),
             fetch(imageURL)
         ]);
+
+        if (!weatherRes.ok) {
+            const text = await weatherRes.text();
+            throw new Error(`Erro no Weather API: ${weatherRes.status} - ${text}`);
+        }
+
+        if (!imageRes.ok) {
+            const text = await imageRes.text();
+            throw new Error(`Erro no Pixabay API: ${imageRes.status} - ${text}`);
+        }
 
         const weatherData = await weatherRes.json();
         const imageData = await imageRes.json();
@@ -160,9 +169,10 @@ app.get('/api/search', isAuthenticated, async (req, res) => {
 
     } catch (error) {
         console.error("Erro mashup:", error);
-        res.status(500).json({ error: "Erro ao obter dados." });
+        res.status(500).json({ error: "Erro ao obter dados: " + error.message });
     }
 });
+
 
 // Histórico
 app.get('/historico', isAuthenticated, async (req, res) => {
