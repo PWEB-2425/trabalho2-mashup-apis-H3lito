@@ -171,7 +171,7 @@ app.get('/historico', isAuthenticated, async (req, res) => {
 });
 
 // Iniciar servidor e ligar à BD
-const client = new MongoClient(process.env.MONGOD_URI);
+const client = new MongoClient(process.env.MONGODB_URI);
 async function startServer() {
     try {
         await client.connect();
