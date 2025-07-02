@@ -1,18 +1,22 @@
 # Projeto de Pesquisa de Imagens com Autenticação
 
-## Nome: Hélito de Jesus Mendes de Horta
+**Aluno:** Hélito de Jesus Mendes de Horta 
+**Número:** 32440 
+**Curso:** Engenharia de Redes e Sistemas de Computadores  
+---
+## Ferramentas utilizadas
 
-## Nº: 32440
-
-## Tecnologias e APIs Utilizadas
-
-- Node.js + Express (Servidor Web)
-- MongoDB (Base de Dados NoSQL)
+- Node.js
+- MongoDB
 - API Pixabay (Pesquisa de imagens)
-- dotenv (Variáveis de ambiente)
-- bcrypt (Hash de passwords)
-- express-session (Gestão de sessões)
-
+- OpenWeatherMap API (dados meteorológicos)
+- doten
+- bcrypt 
+- express-session
+- HTML
+- CSS
+- JavaScript
+---
 ## Instalação e Configuração
 
 ### Pré-requisitos
@@ -20,15 +24,14 @@
 - Node.js instalado ([https://nodejs.org](https://nodejs.org))
 - MongoDB Atlas ou MongoDB local instalado e configurado ([https://www.mongodb.com](https://www.mongodb.com))
 - Conta e API Key da Pixabay ([https://pixabay.com/api/docs/](https://pixabay.com/api/docs/))
-
+---
 ### Passos
 
-1. Clonar o repositório:
+1. Clone  repositório:
    
-   ```bash
    git clone https://github.com/teu-usuario/teu-repositorio.git
-   cd teu-repositorio
-   ```
+   cd repositorio
+---
 
 2. Instalar dependencias
 
@@ -40,10 +43,20 @@
    MONGODB_URI=sua_uri_mongodb_aqui
    PIXABAYKEY=sua_api_key_pixabay_aqui`
    
-   1. Configurar MongoDB: Criar as coleções `users` e `historico` na tua base de dados.
-      
+4. Configurar MongoDB: Criar as coleções `users` e `historico_pesquisa` na base de dados.
       - Executar localmente
-        
-            `node app.js`
-        
-        A aplicação estará disponível em: `http://localhost:3000`
+              `node server.js`
+      A aplicação estará disponível em: `http://localhost:3000`
+---
+## Demonstração execução do sistema
+> Ao abrir a página inicial é apresentado as opções de login e registo.
+> Ao fazer o login pode pesquisar por uma Cidade; De seguida é apresentado o resultado.
+> Como está lidando com dois APIs, é apresentado a temperatura da Cidade e em baixo imagens encontradas.
+> Se não tiver uma conta, pode criar um novo utilizador e de seguida fazer o login.
+![Página Inicial](./images/index.png)
+![Página Login](./images/login.png)
+![Página Registo Utilizador](./images/registo.png)
+![Página Pesquisa](./images/pesquisa.png)
+---
+URL
+- Render:  https://trabalho2-mashup-apis-h3lito.onrender.com
