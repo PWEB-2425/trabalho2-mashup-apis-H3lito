@@ -60,3 +60,5 @@
 ---
 URL
 - Render:  https://trabalho2-mashup-apis-h3lito.onrender.com
+---
+#### Atenção: Como o backend está em deploy gratuito e sofre de cold start (demora para iniciar após inatividade), entrando em hibernação após alguns minutos sem uso, optei por utilizar o Uptime Robot( https://uptimerobot.com/). Este serviço envia pings regulares ao backend a cada X minutos para mantê-lo ativo.
